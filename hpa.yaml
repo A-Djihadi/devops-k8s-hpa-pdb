@@ -1,0 +1,43 @@
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: app-hpa
+  namespace: default
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: app
+  minReplicas: 2
+  maxReplicas: 6
+  metrics:
+    # Scale up si la CPU moyenne dépasse 70% des requests déclarées
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+    # Scale up si la mémoire moyenne dépasse 80% des requests déclarées
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 80
+  behavior:
+    scaleUp:
+      # Scale up rapide : ajouter des pods immédiatement en cas de pic
+      stabilizationWindowSeconds: 0
+      policies:
+        - type: Pods
+          value: 2          # Ajouter max 2 pods à la fois
+          periodSeconds: 60
+    scaleDown:
+      # Scale down prudent : attendre 5 minutes de stabilité avant de réduire
+      # Évite le "flapping" (scale up/down en boucle)
+      stabilizationWindowSeconds: 300
+      policies:
+        - type: Pods
+          value: 1          # Supprimer max 1 pod à la fois
+          periodSeconds: 60

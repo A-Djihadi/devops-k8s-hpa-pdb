@@ -1,0 +1,18 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: app-pdb
+  namespace: default
+spec:
+  # minAvailable: 1 → Kubernetes ne peut pas supprimer des pods si ça fait passer
+  # le nombre de pods disponibles en dessous de 1.
+  #
+  # Alternative : maxUnavailable: 1 → au plus 1 pod peut être indisponible à la fois.
+  # Pour une app avec 2 réplicas :
+  #   minAvailable: 1  équivaut à  maxUnavailable: 1 (même effet pratique)
+  #   minAvailable: 2  bloquerait tout drain de nœud (trop restrictif)
+  minAvailable: 1
+
+  selector:
+    matchLabels:
+      app: app
