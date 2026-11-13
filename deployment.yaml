@@ -26,6 +26,9 @@ spec:
       containers:
         - name: app
           image: nginx:1.25-alpine
+          envFrom:
+            - configMapRef:
+                name: app-config
           ports:
             - containerPort: 80
           # OBLIGATOIRE pour que le HPA fonctionne.

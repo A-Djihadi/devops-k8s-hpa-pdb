@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: app
+  namespace: default
+  labels:
+    app: app
+spec:
+  # ClusterIP : accessible uniquement à l'intérieur du cluster.
+  # C'est le Service qu'utilise le test de charge (`wget http://app`)
+  # et la cible du HPA (via les pods sélectionnés).
+  type: ClusterIP
+  selector:
+    app: app
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+      protocol: TCP
