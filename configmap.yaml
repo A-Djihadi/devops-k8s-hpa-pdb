@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: default
+  labels:
+    app: app
+data:
+  # Pattern repris de la stack source (configmap d'environnement),
+  # clés adaptées à l'app nginx du template.
+  APP_ENV: production
+  NGINX_PORT: "80"
